@@ -3,28 +3,41 @@ package com.wasilyk.app.mydictionary.view
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.wasilyk.app.mydictionary.R
-import com.wasilyk.app.mydictionary.app.App
 import com.wasilyk.app.mydictionary.databinding.ActivityMainBinding
-import com.wasilyk.app.mydictionary.presenter.MainPresenter
+import com.wasilyk.app.mydictionary.model.appstate.AppState
+import com.wasilyk.app.mydictionary.model.appstate.Error
+import com.wasilyk.app.mydictionary.model.appstate.Loading
+import com.wasilyk.app.mydictionary.model.appstate.Success
+import com.wasilyk.app.mydictionary.viewmodel.MainViewModel
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : BaseActivity<AppState>() {
 
     private lateinit var viewBinding: ActivityMainBinding
-    private var presenter: MainPresenter? = null
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    override lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        presenter = App.instance?.presenter
-        presenter?.attachActivity(this)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel.subscribe().observe(this) { appState ->
+            renderData(appState)
+        }
 
         viewBinding.etLayout.setEndIconOnClickListener {
-            presenter?.showWordDefinition()
+            val word = viewBinding.wordEt.text.toString()
+            if(word.isNotBlank()) {
+                viewModel.getData(word, true)
+            } else {
+                viewBinding.etLayout.error = resources.getString(R.string.error_text)
+            }
         }
 
         viewBinding.wordEt.addTextChangedListener(object : TextWatcher {
@@ -38,22 +51,17 @@ class MainActivity : AppCompatActivity(), MainView {
         })
     }
 
-    override fun onDestroy() {
-        presenter?.detachActivity()
-        super.onDestroy()
-    }
-
-    override fun showWordDefinition(definition: String) {
-        viewBinding.definitionTv.text = definition
-    }
-
-    override fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    override fun getWord(): String = viewBinding.wordEt.text.toString()
-
-    override fun showErrorText() {
-        viewBinding.etLayout.error = resources.getString(R.string.error_text)
+    override fun renderData(appState: AppState) {
+        when(appState) {
+            is Loading -> {
+                viewBinding.definitionTv.text = getString(R.string.loading_text)
+            }
+            is Success -> {
+                viewBinding.definitionTv.text = appState.wordDefinition
+            }
+            is Error -> {
+                viewBinding.definitionTv.text = appState.throwable.message
+            }
+        }
     }
 }
