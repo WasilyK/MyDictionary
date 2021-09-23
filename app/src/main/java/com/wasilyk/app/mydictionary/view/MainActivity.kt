@@ -3,7 +3,6 @@ package com.wasilyk.app.mydictionary.view
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.lifecycle.ViewModelProvider
 import com.wasilyk.app.mydictionary.R
 import com.wasilyk.app.mydictionary.databinding.ActivityMainBinding
 import com.wasilyk.app.mydictionary.model.appstate.AppState
@@ -11,22 +10,18 @@ import com.wasilyk.app.mydictionary.model.appstate.Error
 import com.wasilyk.app.mydictionary.model.appstate.Loading
 import com.wasilyk.app.mydictionary.model.appstate.Success
 import com.wasilyk.app.mydictionary.viewmodel.MainViewModel
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class MainActivity : BaseActivity<AppState>() {
 
     private lateinit var viewBinding: ActivityMainBinding
-
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
-    override lateinit var viewModel: MainViewModel
+    override val viewModel: MainViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.subscribe().observe(this) { appState ->
             renderData(appState)
         }

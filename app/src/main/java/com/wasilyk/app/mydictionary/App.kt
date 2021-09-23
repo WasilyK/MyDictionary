@@ -1,14 +1,15 @@
 package com.wasilyk.app.mydictionary
 
-import com.wasilyk.app.mydictionary.di.component.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import android.app.Application
+import com.wasilyk.app.mydictionary.di.module.applicationModule
+import org.koin.core.context.startKoin
 
-class App : DaggerApplication() {
+class App : Application() {
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerAppComponent.factory()
-            .create(
-                applicationContext
-            )
+    override fun onCreate() {
+        super.onCreate()
+        startKoin() {
+            modules(listOf(applicationModule))
+        }
+    }
 }

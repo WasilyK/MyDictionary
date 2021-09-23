@@ -2,12 +2,11 @@ package com.wasilyk.app.mydictionary.model.datasource
 
 import com.wasilyk.app.mydictionary.model.datasource.retrofit.RetrofitApi
 import com.wasilyk.app.mydictionary.model.entities.WordDefinition
-import io.reactivex.rxjava3.core.Single
-import javax.inject.Inject
+import retrofit2.Call
 
-class DataSourceImpl @Inject constructor(private val retrofitApi: RetrofitApi) :
+class DataSourceImpl(private val retrofitApi: RetrofitApi) :
     DataSource {
 
-    override fun getListWordDefinition(word: String): Single<List<WordDefinition>> =
-        retrofitApi.getListWordDefinition(word)
+    override fun getListWordDefinitionAsync(word: String): Call<List<WordDefinition>> =
+        retrofitApi.getListWordDefinitionAsync(word)
 }

@@ -8,7 +8,6 @@ import dagger.Reusable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
@@ -27,7 +26,6 @@ class RetrofitModule {
                 })
                 .build()
         )
-        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
         .build()
         .create(RetrofitApi::class.java)

@@ -54,7 +54,7 @@ class MainPresenterTest {
     fun shouldShowWordDefinition() {
         `when`(view.getWord())
             .thenReturn("hello")
-        `when`(dataSource.getListWordDefinition(view.getWord()))
+        `when`(dataSource.getListWordDefinitionAsync(view.getWord()))
             .thenReturn(Single.just(wordDefinitions))
 
         presenter.showWordDefinition()
@@ -70,7 +70,7 @@ class MainPresenterTest {
         val throwable = Throwable("error")
         `when`(view.getWord())
             .thenReturn("hello")
-        `when`(dataSource.getListWordDefinition(view.getWord()))
+        `when`(dataSource.getListWordDefinitionAsync(view.getWord()))
             .thenReturn(Single.error(throwable))
 
         presenter.showWordDefinition()
