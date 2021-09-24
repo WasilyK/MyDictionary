@@ -1,62 +1,76 @@
 package com.wasilyk.app.mydictionary.view
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
+import com.github.terrakok.cicerone.Screen
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.wasilyk.app.mydictionary.R
 import com.wasilyk.app.mydictionary.databinding.ActivityMainBinding
-import com.wasilyk.app.mydictionary.model.appstate.AppState
-import com.wasilyk.app.mydictionary.model.appstate.Error
-import com.wasilyk.app.mydictionary.model.appstate.Loading
-import com.wasilyk.app.mydictionary.model.appstate.Success
-import com.wasilyk.app.mydictionary.viewmodel.MainViewModel
+import com.wasilyk.app.mydictionary.di.module.FAVORITE_FRAGMENT_SCREEN
+import com.wasilyk.app.mydictionary.di.module.HISTORY_FRAGMENT_SCREEN
+import com.wasilyk.app.mydictionary.di.module.MAIN_FRAGMENT_SCREEN
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
-class MainActivity : BaseActivity<AppState>() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
-    override val viewModel: MainViewModel by inject()
+    private val navigator = AppNavigator(this, R.id.fragment_container)
+    private val navigatorHolder: NavigatorHolder by inject()
+    private val router: Router by inject()
+    private val mainFragmentScreen: Screen by inject(named(MAIN_FRAGMENT_SCREEN))
+    private val historyFragmentScreen: Screen by inject(named(HISTORY_FRAGMENT_SCREEN))
+    private val favoriteFragmentScreen: Screen by inject(named(FAVORITE_FRAGMENT_SCREEN))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        viewModel.subscribe().observe(this) { appState ->
-            renderData(appState)
+        val fragment = supportFragmentManager.findFragmentById(viewBinding.fragmentContainer.id)
+        if(fragment == null) {
+            router.newRootScreen(mainFragmentScreen)
         }
-
-        viewBinding.etLayout.setEndIconOnClickListener {
-            val word = viewBinding.wordEt.text.toString()
-            if(word.isNotBlank()) {
-                viewModel.getData(word, true)
-            } else {
-                viewBinding.etLayout.error = resources.getString(R.string.error_text)
-            }
-        }
-
-        viewBinding.wordEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewBinding.etLayout.error?.let {
-                    viewBinding.etLayout.error = null
-                }
-            }
-        })
     }
 
-    override fun renderData(appState: AppState) {
-        when(appState) {
-            is Loading -> {
-                viewBinding.definitionTv.text = getString(R.string.loading_text)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.history -> {
+                val fragment = supportFragmentManager.findFragmentById(viewBinding.fragmentContainer.id)
+                if(fragment !is HistoryFragment) {
+                    router.navigateTo(historyFragmentScreen, true)
+                }
+                true
             }
-            is Success -> {
-                viewBinding.definitionTv.text = appState.wordDefinition
+            R.id.favorite -> {
+                val fragment = supportFragmentManager.findFragmentById(viewBinding.fragmentContainer.id)
+                if(fragment !is FavoriteFragment) {
+                    router.navigateTo(favoriteFragmentScreen, true)
+                }
+                true
             }
-            is Error -> {
-                viewBinding.definitionTv.text = appState.throwable.message
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        navigatorHolder.removeNavigator()
+        super.onPause()
     }
 }
