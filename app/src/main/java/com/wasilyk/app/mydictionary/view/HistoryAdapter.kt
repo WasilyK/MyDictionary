@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.wasilyk.app.mydictionary.databinding.HistoryItemViewBinding
-import com.wasilyk.app.mydictionary.model.datasource.room.HistoryEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.history.HistoryEntity
 
 class HistoryAdapter(
     private val histories: List<HistoryEntity>,

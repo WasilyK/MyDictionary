@@ -1,23 +1,16 @@
-package com.wasilyk.app.mydictionary.di.module
+package com.wasilyk.app.mydictionary.model.datasource.retrofit.dictionary
 
 import com.google.gson.GsonBuilder
-import com.wasilyk.app.mydictionary.model.datasource.retrofit.RetrofitApi
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-@Module
-class RetrofitModule {
+class DictionaryApiFactory {
 
     private val baseUrl = "https://api.dictionaryapi.dev/"
 
-    @Reusable
-    @Provides
-    fun provideRetrofitApi(): RetrofitApi = Retrofit.Builder()
+    fun createRetrofitApi(): DictionaryApi = Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(
             OkHttpClient.Builder()
@@ -28,5 +21,5 @@ class RetrofitModule {
         )
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
         .build()
-        .create(RetrofitApi::class.java)
+        .create(DictionaryApi::class.java)
 }

@@ -3,7 +3,7 @@ package com.wasilyk.app.mydictionary.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.wasilyk.app.mydictionary.model.datasource.room.HistoryEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.history.HistoryEntity
 import com.wasilyk.app.mydictionary.model.entities.appstate.AppState
 import com.wasilyk.app.mydictionary.model.entities.appstate.Error
 import com.wasilyk.app.mydictionary.model.entities.appstate.Success
@@ -23,28 +23,22 @@ class HistoryViewModel(
     }
     private val scope = CoroutineScope(Dispatchers.IO + exceptionHandler)
 
-    init {
-        scope.launch {
-            getData()
-        }
-    }
-
     fun getData() {
         scope.launch {
-            val histories = interactor.getHistory()
+            val histories = interactor.selectAllHistories()
             _liveData.postValue(Success(histories))
         }
     }
 
     fun deleteHistory(historyEntity: HistoryEntity) =
         scope.launch {
-            interactor.deleteHistory(historyEntity)
+            interactor.delete(historyEntity)
             getData()
         }
 
     fun clearHistory() {
         scope.launch {
-            interactor.clearHistory()
+            interactor.clear()
             getData()
         }
     }

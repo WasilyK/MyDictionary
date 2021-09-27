@@ -1,4 +1,4 @@
-package com.wasilyk.app.mydictionary.model.datasource.room
+package com.wasilyk.app.mydictionary.model.datasource.room.history
 
 import androidx.room.*
 

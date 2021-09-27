@@ -3,7 +3,7 @@ package com.wasilyk.app.mydictionary.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.wasilyk.app.mydictionary.model.datasource.room.FavoriteEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.favorite.FavoriteEntity
 import com.wasilyk.app.mydictionary.model.entities.appstate.AppState
 import com.wasilyk.app.mydictionary.model.entities.appstate.Error
 import com.wasilyk.app.mydictionary.model.entities.appstate.Success
@@ -22,14 +22,14 @@ class FavoriteViewModel(private val interactor: FavoriteInteractor) : ViewModel(
 
     fun getData() {
         scope.launch {
-            val data = interactor.getData()
+            val data = interactor.selectAllFavorites()
             _liveData.postValue(Success(data))
         }
     }
 
     fun itemDelete(favoriteEntity: FavoriteEntity) {
         scope.launch {
-            interactor.favoriteItemDelete(favoriteEntity)
+            interactor.delete(favoriteEntity)
             getData()
         }
     }

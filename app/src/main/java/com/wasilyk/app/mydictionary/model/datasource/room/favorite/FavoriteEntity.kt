@@ -1,4 +1,4 @@
-package com.wasilyk.app.mydictionary.model.datasource.room
+package com.wasilyk.app.mydictionary.model.datasource.room.favorite
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -21,5 +21,5 @@ data class FavoriteEntity(
     val definition: String,
 
     @ColumnInfo(name = "image_url")
-    val imageUrl: String
+    val imageUrl: String?
 )

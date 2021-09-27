@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wasilyk.app.mydictionary.databinding.FragmentFavoriteBinding
-import com.wasilyk.app.mydictionary.model.datasource.room.FavoriteEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.favorite.FavoriteEntity
 import com.wasilyk.app.mydictionary.model.entities.appstate.AppState
 import com.wasilyk.app.mydictionary.model.entities.appstate.Error
 import com.wasilyk.app.mydictionary.model.entities.appstate.Loading
 import com.wasilyk.app.mydictionary.model.entities.appstate.Success
 import com.wasilyk.app.mydictionary.viewmodel.FavoriteViewModel
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment : Fragment(), FavoriteAdapter.OnItemDeleteClickListener {
 
@@ -26,7 +26,7 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnItemDeleteClickListener {
     private val data = mutableListOf<FavoriteEntity>()
     private val favoriteAdapter = FavoriteAdapter(data, this)
 
-    private val viewModel: FavoriteViewModel by inject()
+    private val favoritViewModel: FavoriteViewModel by viewModel()
 
     companion object {
         fun newInstance(): Fragment = FavoriteFragment()
@@ -44,10 +44,10 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnItemDeleteClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        viewModel.liveData.observe(viewLifecycleOwner) { appState ->
+        favoritViewModel.liveData.observe(viewLifecycleOwner) { appState ->
             renderData(appState)
         }
-        viewModel.getData()
+        favoritViewModel.getData()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -95,6 +95,6 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnItemDeleteClickListener {
     }
 
     override fun onItemDeleteClick(pos: Int) {
-        viewModel.itemDelete(data[pos])
+        favoritViewModel.itemDelete(data[pos])
     }
 }

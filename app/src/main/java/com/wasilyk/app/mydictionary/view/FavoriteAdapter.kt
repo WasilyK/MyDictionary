@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.wasilyk.app.mydictionary.databinding.FavoriteItemViewBinding
-import com.wasilyk.app.mydictionary.model.datasource.room.FavoriteEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.favorite.FavoriteEntity
 
 class FavoriteAdapter(
     private val data: List<FavoriteEntity>,
@@ -26,8 +26,7 @@ class FavoriteAdapter(
         ViewHolder(
             FavoriteItemViewBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            )
-                .root
+            ).root
         )
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {

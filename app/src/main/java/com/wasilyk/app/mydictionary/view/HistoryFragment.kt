@@ -2,7 +2,6 @@ package com.wasilyk.app.mydictionary.view
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -11,19 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wasilyk.app.mydictionary.R
 import com.wasilyk.app.mydictionary.databinding.FragmentHistoryBinding
-import com.wasilyk.app.mydictionary.model.datasource.room.HistoryEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.history.HistoryEntity
 import com.wasilyk.app.mydictionary.model.entities.appstate.AppState
 import com.wasilyk.app.mydictionary.model.entities.appstate.Error
 import com.wasilyk.app.mydictionary.model.entities.appstate.Loading
 import com.wasilyk.app.mydictionary.model.entities.appstate.Success
 import com.wasilyk.app.mydictionary.viewmodel.HistoryViewModel
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HistoryFragment : Fragment(), HistoryAdapter.OnItemClickListener {
 
     private val data = mutableListOf<HistoryEntity>()
     private val historyAdapter = HistoryAdapter(data, this)
-    private val historyViewModel: HistoryViewModel by inject()
+    private val historyViewModel: HistoryViewModel by viewModel()
 
     private var _viewBinding: FragmentHistoryBinding? = null
     private val viewBinding get() = _viewBinding!!

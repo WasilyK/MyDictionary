@@ -3,13 +3,10 @@ package com.wasilyk.app.mydictionary.view
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import coil.Coil
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.wasilyk.app.mydictionary.R
@@ -19,14 +16,14 @@ import com.wasilyk.app.mydictionary.model.entities.appstate.Error
 import com.wasilyk.app.mydictionary.model.entities.appstate.Loading
 import com.wasilyk.app.mydictionary.model.entities.appstate.Success
 import com.wasilyk.app.mydictionary.viewmodel.MainViewModel
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
     private var _viewBinding: FragmentMainBinding? = null
     private val viewBinding: FragmentMainBinding
         get() = _viewBinding!!
-    private val mainViewModel: MainViewModel by inject()
+    private val mainViewModel: MainViewModel by viewModel()
 
     private var imageUrl: String? = null
 
@@ -49,29 +46,16 @@ class MainFragment : Fragment() {
 
         initFavoriteButton()
 
-        mainViewModel.subscribe().observe(viewLifecycleOwner) { appState ->
+        mainViewModel.liveData.observe(viewLifecycleOwner) { appState ->
             renderData(appState)
         }
 
         mainViewModel.imageUrlLiveData.observe(viewLifecycleOwner) { url ->
-            if (url == "error") {
-                viewBinding.image.load(R.drawable.ic_baseline_no_photography_24)
-            } else {
-                imageUrl = url
-                viewBinding.image.load(imageUrl) {
-                    placeholder(R.drawable.ic_baseline_no_photography_24)
-                    crossfade(1500)
-                    transformations(RoundedCornersTransformation(10F))
-                }
-            }
+            renderImageUrl(url)
         }
 
-        mainViewModel.favoriteButtonLiveData.observe(viewLifecycleOwner) { isNotShow ->
-            if (!isNotShow) {
-                showFavoriteButton()
-            } else {
-                hideFavoriteButton()
-            }
+        mainViewModel.favoriteButtonLiveData.observe(viewLifecycleOwner) { isNotShouldShow ->
+            renderShouldShowFavoriteButton(isNotShouldShow)
         }
 
         viewBinding.etLayout.setEndIconOnClickListener {
@@ -100,7 +84,7 @@ class MainFragment : Fragment() {
             setStartIconOnClickListener {
                 val title = viewBinding.wordEt.text.toString()
                 val definition = viewBinding.definitionTv.text.toString()
-                mainViewModel.saveToFavorite(title, definition, imageUrl!!)
+                mainViewModel.saveToFavorite(title, definition, imageUrl)
             }
         }
     }
@@ -123,12 +107,21 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showFavoriteButton() {
-        viewBinding.etLayout.isStartIconVisible = true
+    private fun renderShouldShowFavoriteButton(isNotShouldShow: Boolean) {
+        viewBinding.etLayout.isStartIconVisible = !isNotShouldShow
     }
 
-    private fun hideFavoriteButton() {
-        viewBinding.etLayout.isStartIconVisible = false
+    private fun renderImageUrl(url: String) {
+        if (url == "error") {
+            viewBinding.image.load(R.drawable.ic_baseline_no_photography_24)
+        } else {
+            imageUrl = url
+            viewBinding.image.load(imageUrl) {
+                placeholder(R.drawable.ic_baseline_no_photography_24)
+                crossfade(1500)
+                transformations(RoundedCornersTransformation(10F))
+            }
+        }
     }
 
     override fun onDestroyView() {

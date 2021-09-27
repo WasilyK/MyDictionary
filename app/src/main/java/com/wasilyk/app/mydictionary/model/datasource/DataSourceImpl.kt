@@ -1,26 +1,26 @@
 package com.wasilyk.app.mydictionary.model.datasource
 
-import com.wasilyk.app.mydictionary.model.datasource.retrofit.RetrofitApi
+import com.wasilyk.app.mydictionary.model.datasource.retrofit.dictionary.DictionaryApi
 import com.wasilyk.app.mydictionary.model.datasource.retrofit.pexel.PexelsApi
-import com.wasilyk.app.mydictionary.model.datasource.room.FavoriteDao
-import com.wasilyk.app.mydictionary.model.datasource.room.FavoriteEntity
-import com.wasilyk.app.mydictionary.model.datasource.room.HistoryDao
-import com.wasilyk.app.mydictionary.model.datasource.room.HistoryEntity
-import com.wasilyk.app.mydictionary.model.entities.WordDefinition
+import com.wasilyk.app.mydictionary.model.datasource.room.favorite.FavoriteDao
+import com.wasilyk.app.mydictionary.model.datasource.room.favorite.FavoriteEntity
+import com.wasilyk.app.mydictionary.model.datasource.room.history.HistoryDao
+import com.wasilyk.app.mydictionary.model.datasource.room.history.HistoryEntity
+import com.wasilyk.app.mydictionary.model.entities.dictionary.DictionaryResponse
 import com.wasilyk.app.mydictionary.model.entities.pexels.PexelResponse
 import retrofit2.Call
 
 class DataSourceImpl(
-    private val retrofitApi: RetrofitApi,
+    private val dictionaryApi: DictionaryApi,
     private val historyDao: HistoryDao,
     private val pexelsApi: PexelsApi,
     private val favoriteDao: FavoriteDao
 ) : DataSource {
 
-    override fun getListWordDefinitionAsync(word: String): Call<List<WordDefinition>> =
-        retrofitApi.getListWordDefinitionAsync(word)
+    override fun getDictionaryResponse(word: String): Call<List<DictionaryResponse>> =
+        dictionaryApi.getListWordDefinitionAsync(word)
 
-    override suspend fun getHistory(): List<HistoryEntity> =
+    override suspend fun selectAllFromHistory(): List<HistoryEntity> =
         historyDao.selectAll()
 
     override fun deleteHistory(historyEntity: HistoryEntity) =
@@ -33,10 +33,19 @@ class DataSourceImpl(
     override fun getPexelResponse(auth: String, word: String): Call<PexelResponse> =
         pexelsApi.getPexelsResponse(auth, word)
 
-    override suspend fun getFavoriteEntities(): List<FavoriteEntity> =
+    override suspend fun selectAllFromFavorite(): List<FavoriteEntity> =
         favoriteDao.selectAll()
 
-    override fun favoriteItemDelete(favoriteEntity: FavoriteEntity) {
+    override fun deleteFavorite(favoriteEntity: FavoriteEntity) {
         favoriteDao.delete(favoriteEntity)
     }
+
+    override fun selectFavoriteByTitle(title: String): FavoriteEntity? =
+        favoriteDao.selectByTitle(title)
+
+    override fun insertToFavorite(favoriteEntity: FavoriteEntity) =
+        favoriteDao.insert(favoriteEntity)
+
+    override fun insertToHistory(historyEntity: HistoryEntity) =
+        historyDao.insert(historyEntity)
 }

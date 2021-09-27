@@ -1,4 +1,4 @@
-package com.wasilyk.app.mydictionary.model.datasource.room
+package com.wasilyk.app.mydictionary.model.datasource.room.favorite
 
 import androidx.room.Dao
 import androidx.room.Delete
