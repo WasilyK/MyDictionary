@@ -1,9 +1,9 @@
 package com.wasilyk.app.mydictionary.presenter
 
-import com.wasilyk.app.mydictionary.model.datasource.DataSource
-import com.wasilyk.app.mydictionary.model.entities.dictionary.Definition
-import com.wasilyk.app.mydictionary.model.entities.dictionary.Meaning
-import com.wasilyk.app.mydictionary.model.entities.dictionary.DictionaryResponse
+import com.wasilyk.app.core.datasource.DataSource
+import com.wasilyk.app.core.entities.dictionary.Definition
+import com.wasilyk.app.core.entities.dictionary.Meaning
+import com.wasilyk.app.core.entities.dictionary.DictionaryResponse
 import com.wasilyk.app.mydictionary.view.MainView
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
