@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_text">The field must not be empty</string>
+    <string name="loading_text">Loading, please wait ...</string>
+    <string name="enter_the_word">Enter the word</string>
+    <string name="image_description">https://www.pexels.com/</string>
+</resources>
