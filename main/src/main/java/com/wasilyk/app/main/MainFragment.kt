@@ -1,5 +1,8 @@
 package com.wasilyk.app.main
 
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -135,6 +138,12 @@ class MainFragment : Fragment() {
                 placeholder(R.drawable.ic_baseline_no_photography_24)
                 crossfade(1500)
                 transformations(RoundedCornersTransformation(10F))
+            }
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val blurEffect = RenderEffect.createBlurEffect(
+                    15f,0f, Shader.TileMode.MIRROR
+                )
+                viewBinding.image.setRenderEffect(blurEffect)
             }
         }
     }

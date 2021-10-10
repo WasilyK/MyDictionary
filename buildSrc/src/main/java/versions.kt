@@ -33,4 +33,7 @@ object Versions {
     const val CICERONE = "7.1"
 
     const val COIL = "1.3.2"
+
+    const val COMPILE_SDK = 31
+    const val TARGET_SDK = 31
 }
