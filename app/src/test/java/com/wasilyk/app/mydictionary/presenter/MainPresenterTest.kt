@@ -1,9 +1,9 @@
 package com.wasilyk.app.mydictionary.presenter
 
-import com.wasilyk.app.mydictionary.model.datasource.DataSource
-import com.wasilyk.app.mydictionary.model.entities.Definition
-import com.wasilyk.app.mydictionary.model.entities.Meaning
-import com.wasilyk.app.mydictionary.model.entities.WordDefinition
+import com.wasilyk.app.core.datasource.DataSource
+import com.wasilyk.app.core.entities.dictionary.Definition
+import com.wasilyk.app.core.entities.dictionary.Meaning
+import com.wasilyk.app.core.entities.dictionary.DictionaryResponse
 import com.wasilyk.app.mydictionary.view.MainView
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -23,7 +23,7 @@ class MainPresenterTest {
     private lateinit var presenter: MainPresenter
     private val definitions = "used as a greeting or to begin a phone conservation"
     private val wordDefinitions = listOf(
-        WordDefinition(
+        DictionaryResponse(
             listOf(
                 Meaning(
                     listOf(Definition(definitions))
@@ -54,7 +54,7 @@ class MainPresenterTest {
     fun shouldShowWordDefinition() {
         `when`(view.getWord())
             .thenReturn("hello")
-        `when`(dataSource.getListWordDefinition(view.getWord()))
+        `when`(dataSource.getDictionaryResponse(view.getWord()))
             .thenReturn(Single.just(wordDefinitions))
 
         presenter.showWordDefinition()
@@ -70,7 +70,7 @@ class MainPresenterTest {
         val throwable = Throwable("error")
         `when`(view.getWord())
             .thenReturn("hello")
-        `when`(dataSource.getListWordDefinition(view.getWord()))
+        `when`(dataSource.getDictionaryResponse(view.getWord()))
             .thenReturn(Single.error(throwable))
 
         presenter.showWordDefinition()

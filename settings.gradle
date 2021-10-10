@@ -8,3 +8,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "My Dictionary"
 include ':app'
+include ':favorite'
+include ':core'
+include ':history'
+include ':main'
+include ':room_api'
+include ':room_impl'

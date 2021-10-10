@@ -1,14 +1,29 @@
 package com.wasilyk.app.mydictionary
 
-import com.wasilyk.app.mydictionary.di.component.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import android.app.Application
+import com.github.terrakok.cicerone.Cicerone
+import com.wasilyk.app.mydictionary.di.AppComponent
+import com.wasilyk.app.mydictionary.di.DaggerAppComponent
+import com.wasilyk.app.mydictionary.di.SubComponentsProvider
 
-class App : DaggerApplication() {
+class App : Application(), SubComponentsProvider {
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerAppComponent.factory()
+    lateinit var appComponent: AppComponent
+    private val cicerone = Cicerone.create()
+
+    companion object {
+        lateinit var instance: App
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        appComponent = DaggerAppComponent
+            .factory()
             .create(
-                applicationContext
+                applicationContext,
+                cicerone.router,
+                cicerone.getNavigatorHolder()
             )
+    }
 }
