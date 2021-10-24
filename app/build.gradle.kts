@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = Versions.COMPILE_SDK
 
     defaultConfig {
         applicationId = "com.wasilyk.app.mydictionary"
         minSdk = 21
-        targetSdk = 30
+        targetSdk = Versions.TARGET_SDK
         versionCode = 1
         versionName = "1.0"
 
